@@ -2,9 +2,8 @@ package Progetto_prog_3.entities.enemies;
 
 import java.awt.geom.Rectangle2D;
 import Progetto_prog_3.Game;
-import Progetto_prog_3.Audio.AudioPlayer;
 import Progetto_prog_3.entities.Entity;
-import Progetto_prog_3.entities.Player;
+import Progetto_prog_3.entities.Players.Players;
 import Progetto_prog_3.entities.MementoSavings.EnemyMemento;
 
 import static Progetto_prog_3.utils.Constants.EnemtConstants.*;
@@ -42,31 +41,31 @@ public abstract class AbstractEnemy extends Entity{
     
     }
 
-    public abstract void update(int[][] levelData, Player player);
+    public abstract void update(int[][] levelData, Players players);
     //Funzione ereditaria da implementare nelle sottoclassi per far funzionare il template metod
-    public abstract void makeMovement(int[][] levelData, Player player);
+    public abstract void makeMovement(int[][] levelData, Players players);
     public abstract int flipX();
     public abstract int flipW();
-    public abstract int flipXP(Player player);
-    public abstract int flipWP(Player player);
+    public abstract int flipXP(Players players);
+    public abstract int flipWP(Players players);
 
     //Template method design pattern che implementa la logica del movimento base
     //Un nemico si trova in aria inizialmente, ed ha bisogno del check sul primo update
     //Successivamente il nemico si muoverà secondo le sue regole, che il template method implemenerà
     //nelle soottoclassi
-    protected final void act(int[][] levelData, Player player){
+    protected final void act(int[][] levelData, Players players){
         if (firstUpdate) firstUpdateCheck(levelData);
         if (inAir) {
             updateInAir(levelData);
         } else {
-            makeMovement(levelData, player);
+            makeMovement(levelData, players);
         }
     } 
 
     //Troviamo qui il metodo per permettere ad un nemico di muoversi verso il nostro player 
-    protected void turnTowardsPlayer(Player player){
+    protected void turnTowardsPlayer(Players players){
 
-        if (player.getHitbox().x > hitbox.x) {
+        if (players.getHitbox().x > hitbox.x) {
             wlakDir = RIGHT;
         } else {
             wlakDir = LEFT;
@@ -78,14 +77,14 @@ public abstract class AbstractEnemy extends Entity{
     //Viene sontrollato se il giocatore è in range d visione del nemico e se il percorso verso di lui sia libero
     //Per libero si intende che non ci sono blocchi tra di loro e che ci sia un percorso attraversabile
     //un burrone non permetterebbe il movimento in quella direzione per esempio
-    protected boolean canSeePlayer(int[][] levelData, Player player){
+    protected boolean canSeePlayer(int[][] levelData, Players players){
 
         //Controlliamo che siano nello stesso livello in y del player
-        int playerYPos = (int) ((player.getHitbox().y + player.getHitbox().height - 1)/ Game.TILES_SIZE);
+        int playerYPos = (int) ((players.getHitbox().y + players.getHitbox().height - 1)/ Game.TILES_SIZE);
 
         if (playerYPos == enemyTileY) {
             //Se è così controlliamo che il player sia in range di visione e che il percorso verso il player sia percorribile
-            if (isPlayerInRangeOfVision(player) && isPathClear(levelData, hitbox, player.getHitbox(), enemyTileY)) {
+            if (isPlayerInRangeOfVision(players) && isPathClear(levelData, hitbox, players.getHitbox(), enemyTileY)) {
                 //Se tutte le condizioni sono vere ritorniamo vero ed il nemico può vedere il player e raggiungerlo
                 return true; 
             }
@@ -95,10 +94,10 @@ public abstract class AbstractEnemy extends Entity{
     }
 
     //Questo metodo ci dice se il player si trova in range di visione per far muovere il nemico verso il player
-    protected boolean isPlayerInRangeOfVision(Player player) {
+    protected boolean isPlayerInRangeOfVision(Players players) {
 
         //La distanza viene calcolata in base al centro della hitbox delle entità
-        int absValue = (int)Math.abs((player.getHitbox().x + player.getHitbox().width / 2) - (hitbox.x + hitbox.width / 2));
+        int absValue = (int)Math.abs((players.getHitbox().x + players.getHitbox().width / 2) - (hitbox.x + hitbox.width / 2));
         //Se la distanza in orizzontale è minore di una lungheza di attacco che vale un blocco
         //per 5, la condizione è vera e ritora vero, altrimenti falso
         return absValue <= visionDistance;
@@ -107,10 +106,10 @@ public abstract class AbstractEnemy extends Entity{
 
     //Questo metodo ci permette di osservare se il player è in range di attacco, il metodo è uguale a quello di prima
     //Con l'unica differenza che viene fatto il controllo non su una distanza di 5 blocchi ma su una distanza di 1 ebbasta
-    protected boolean isPlayerCloseForAttack(Player player){
+    protected boolean isPlayerCloseForAttack(Players players){
 
         //La distanza viene calcolata in base al centro della hitbox delle entità
-        int absValue = (int)Math.abs((player.getHitbox().x + player.getHitbox().width / 2) - (hitbox.x + hitbox.width / 2));
+        int absValue = (int)Math.abs((players.getHitbox().x + players.getHitbox().width / 2) - (hitbox.x + hitbox.width / 2));
         //Se la distanza in orizzontale è minore di una lungheza di attacco che vale un blocco
         return absValue <= attackDistance;
     }
@@ -161,10 +160,10 @@ public abstract class AbstractEnemy extends Entity{
     }
 
     //questo metodo invece ci permette di applicare danno al player se il nemico lo colpisce
-    protected void checkEnemyHit(Rectangle2D.Float attackBox, Player player) {
-        if (attackBox.intersects(player.getHitbox()) && !player.getInvulnerability()) {
+    protected void checkEnemyHit(Rectangle2D.Float attackBox, Players players) {
+        if (attackBox.intersects(players.getHitbox()) && !players.getInvulnerability()) {
             //Il segno meno serve a mandare una somma negativa alla vita del player, non lo stiamo curando, lo stiamo picchindo
-            player.changeHealth(-getEnemyDamage(enemyType));
+            players.changeHealth(-getEnemyDamage(enemyType));
             attackChecked = true;
         }
     }

@@ -6,8 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import Progetto_prog_3.Game;
-import Progetto_prog_3.Audio.AudioPlayer;
-import Progetto_prog_3.entities.Player;
+import Progetto_prog_3.entities.Players.Players;
 import Progetto_prog_3.utils.Constants.EnemtConstants;
 import static Progetto_prog_3.utils.HelpMetods.isTileSolid;
 import static Progetto_prog_3.utils.Constants.EnemtConstants.Ghost.*;
@@ -51,13 +50,13 @@ public class Ghost extends AbstractEnemy {
     }
 
     @Override
-    public void update(int[][] levelData, Player player) {
+    public void update(int[][] levelData, Players players) {
         
         if (active) {
-            act(levelData, player);
+            act(levelData, players);
             updateAttackBox();
-            flipXP(player);
-            flipWP(player);
+            flipXP(players);
+            flipWP(players);
         }
 
         updateAnimationTick();
@@ -69,11 +68,11 @@ public class Ghost extends AbstractEnemy {
     //Questa funzione serve a gestire il suo movimento peculiare andando a gestire i suoi stati 
     //con flag e speciali funzioni dedicate/Overloadate
     @Override
-    public void makeMovement(int[][] levelData, Player player) {
+    public void makeMovement(int[][] levelData, Players players) {
         switch (state) {
 
             case EnemtConstants.Ghost.GHOST_NOT_SPAWNED:
-                if (isPlayerInRangeOfVision(player)) {
+                if (isPlayerInRangeOfVision(players)) {
                     newState(GHOST_SPAWN);
                 }
                 break;
@@ -99,7 +98,7 @@ public class Ghost extends AbstractEnemy {
                 attackChecked = false;
                 updateTeleportTick();
                 //Se è passato abbastanza tempo viene eseguito l'attacco
-                if(attackTimer >= 300 && isPlayerCloseForAttack(player)){
+                if(attackTimer >= 300 && isPlayerCloseForAttack(players)){
                     attackTimer = 0;
                     newState(GHOST_ATTACK);
                 }
@@ -112,7 +111,7 @@ public class Ghost extends AbstractEnemy {
                 //Come al solito, la funzione per applicare il danno viene bloccata da se stessa durante la prima esecusione
                 //Quando si ritorna nello stato di idle per poi rifare i controlli di attackdistance, viene resettata a falso
                 //Per permettere di fare danno nel prosimo attacco
-                if(!attackChecked && aniIndex >= 4) checkEnemyHitEllipse(circularAttackbox, player);
+                if(!attackChecked && aniIndex >= 4) checkEnemyHitEllipse(circularAttackbox, players);
                 break;
         
             default:
@@ -238,11 +237,11 @@ public class Ghost extends AbstractEnemy {
         }
     }
 
-    protected void checkEnemyHitEllipse(Ellipse2D.Float attackBox, Player player) {
-        if (attackBox.intersects(player.getHitbox()) && !player.getInvulnerability()) {
+    protected void checkEnemyHitEllipse(Ellipse2D.Float attackBox, Players players) {
+        if (attackBox.intersects(players.getHitbox()) && !players.getInvulnerability()) {
             //Il segno meno serve a mandare una somma negativa alla vita del player, non lo stiamo curando, lo stiamo picchindo
-            player.changeHealth(-getEnemyDamage(enemyType));
-            statusManager.applySlow(player, 2, 0.7f);
+            players.changeHealth(-getEnemyDamage(enemyType));
+            statusManager.applySlow(players, 2, 0.7f);
             attackChecked = true;
         }
     }
@@ -253,12 +252,12 @@ public class Ghost extends AbstractEnemy {
      * vengono effettuati nuovi calcoli anche sulla base della verticalità oltre che sulla orizzontalità
      */
     @Override
-    protected boolean isPlayerInRangeOfVision(Player player){
+    protected boolean isPlayerInRangeOfVision(Players players){
 
         boolean isInRange = false;
 
-        int absValueX = (int)Math.abs((player.getHitbox().x + player.getHitbox().width / 2) - (hitbox.x + hitbox.width / 2));
-        int absValueY = (int)Math.abs((player.getHitbox().y - player.getHitbox().height / 2) - (hitbox.y - hitbox.height / 2));
+        int absValueX = (int)Math.abs((players.getHitbox().x + players.getHitbox().width / 2) - (hitbox.x + hitbox.width / 2));
+        int absValueY = (int)Math.abs((players.getHitbox().y - players.getHitbox().height / 2) - (hitbox.y - hitbox.height / 2));
         //Se una distanza è minore della vision distance in X o Y, viene ritornato vero, altrimenti falso
         if (absValueX <= visionDistance && absValueY <= visionDistance) {
             isInRange = true;
@@ -273,12 +272,12 @@ public class Ghost extends AbstractEnemy {
      * vengono effettuati nuovi calcoli anche sulla base della verticalità oltre che sulla orizzontalità
      */
     @Override
-    protected boolean isPlayerCloseForAttack(Player player){
+    protected boolean isPlayerCloseForAttack(Players players){
 
         boolean isInRange = false;
 
-        int absValueX = (int)Math.abs((player.getHitbox().x + player.getHitbox().width / 2) - (hitbox.x + hitbox.width / 2));
-        int absValueY = (int)Math.abs((player.getHitbox().y - player.getHitbox().height / 2) - (hitbox.y - hitbox.height / 2));
+        int absValueX = (int)Math.abs((players.getHitbox().x + players.getHitbox().width / 2) - (hitbox.x + hitbox.width / 2));
+        int absValueY = (int)Math.abs((players.getHitbox().y - players.getHitbox().height / 2) - (hitbox.y - hitbox.height / 2));
         //Se una distanza è minore della ATTACK distance in X o Y, viene ritornato vero, altrimenti falso
         if (absValueX <= attackDistance && absValueY <= attackDistance) {
             isInRange = true;
@@ -304,14 +303,14 @@ public class Ghost extends AbstractEnemy {
     //Anche le funzioni di flip per il rendering sono peculiari, il ghost non si muove, si teletrasporta, quindi viene
     //Semlicemente generato un offset per la flipX ed un moltiplicatore per la flipW in base alla posizione in x del player
     @Override
-    public int flipXP(Player player) {
-        if (player.getHitbox().x + player.getHitbox().width/2 > hitbox.x + hitbox.width/2) {
+    public int flipXP(Players players) {
+        if (players.getHitbox().x + players.getHitbox().width/2 > hitbox.x + hitbox.width/2) {
             return (int)(GHOST_WIDTH + 5 * Game.SCALE);
         } else return 0;
     }
     @Override
-    public int flipWP(Player player) {
-        if (player.getHitbox().x + player.getHitbox().width/2 > hitbox.x + hitbox.width/2) {
+    public int flipWP(Players players) {
+        if (players.getHitbox().x + players.getHitbox().width/2 > hitbox.x + hitbox.width/2) {
             return -1;
         } else return 1;
     }

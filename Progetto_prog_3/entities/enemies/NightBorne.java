@@ -4,7 +4,7 @@ import static Progetto_prog_3.utils.Constants.EnemtConstants.NightBorne.*;
 import static Progetto_prog_3.utils.Constants.Directions.*;
 import java.awt.geom.Rectangle2D;
 import Progetto_prog_3.Game;
-import Progetto_prog_3.entities.Player;
+import Progetto_prog_3.entities.Players.Players;
 
 public class NightBorne extends AbstractEnemy {
 
@@ -25,10 +25,10 @@ public class NightBorne extends AbstractEnemy {
     }
 
     @Override
-    public void update(int[][] levelData, Player player){
+    public void update(int[][] levelData, Players players){
 
         if(active){
-            act(levelData, player);
+            act(levelData, players);
             updateAttackBoxDirection();
         }
         updateAnimationTick();
@@ -37,7 +37,7 @@ public class NightBorne extends AbstractEnemy {
 
     //Implementazione del metodo astratto della classe madre per il template method pattern
     @Override
-    public void makeMovement(int[][] levelData, Player player) {
+    public void makeMovement(int[][] levelData, Players players) {
         
         switch (state) {
             //Lo stato del Nightborne viene impostato a running da subito
@@ -48,12 +48,12 @@ public class NightBorne extends AbstractEnemy {
             case NIGHT_BORNE_RUN:
                 aniSpeed = 20;
                 //Se il nightboren può vedere il player si gira verso di esso
-                if (canSeePlayer(levelData, player)) {
-                    turnTowardsPlayer(player);
+                if (canSeePlayer(levelData, players)) {
+                    turnTowardsPlayer(players);
 
                     //Se il player è abbastanza vicino al nemico, questo farà un attacco
                     //Dopo aver fatto tutto, il nemico torna a muversi nel livello
-                    if (isPlayerCloseForAttack(player)) {
+                    if (isPlayerCloseForAttack(players)) {
                         //Viene sewttato lo stato ad attacco
                         newState(NIGHT_BORNE_ATTACK);
                     }
@@ -75,7 +75,7 @@ public class NightBorne extends AbstractEnemy {
                     attackChecked = false;
                 }
                 if (aniIndex == 10 && !attackChecked) {
-                    checkEnemyHit(attackBox, player);
+                    checkEnemyHit(attackBox, players);
                 }
                 break;
             
@@ -117,12 +117,12 @@ public class NightBorne extends AbstractEnemy {
     }
 
     @Override
-    public int flipXP(Player player) {
+    public int flipXP(Players players) {
         return 0;
     }
 
     @Override
-    public int flipWP(Player player) {
+    public int flipWP(Players players) {
         return 0;
     }
 

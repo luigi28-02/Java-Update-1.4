@@ -1,4 +1,4 @@
-package Progetto_prog_3.entities;
+package Progetto_prog_3.entities.Players;
 
 import static Progetto_prog_3.utils.Constants.PlayerConstants.*;
 import static Progetto_prog_3.utils.HelpMetods.*;
@@ -15,7 +15,7 @@ import Progetto_prog_3.entities.MementoSavings.Memento;
 import Progetto_prog_3.entities.MementoSavings.PlayerMemento;
 import Progetto_prog_3.utils.LoadSave;
 
-public class Player extends Entity {
+public class Player extends Players {
 
     //Variabili per la gestione dei frame
     private int aniSpeed = 15;
@@ -49,33 +49,33 @@ public class Player extends Entity {
 
 
     // StatusBarUI
-	private BufferedImage statusBarImg;
+    private BufferedImage statusBarImg;
     //Ultimate
     private BufferedImage[] ultimate;
 
-	private int statusBarWidth = (int) (192 * Game.SCALE);
-	private int statusBarHeight = (int) (58 * Game.SCALE);
-	private int statusBarX = (int) (10 * Game.SCALE);
-	private int statusBarY = (int) (10 * Game.SCALE);
+    private int statusBarWidth = (int) (192 * Game.SCALE);
+    private int statusBarHeight = (int) (58 * Game.SCALE);
+    private int statusBarX = (int) (10 * Game.SCALE);
+    private int statusBarY = (int) (10 * Game.SCALE);
 
     //Variabili per definire la health bar
-	private int healthBarWidth = (int) (150 * Game.SCALE);
-	private int healthBarHeight = (int) (4 * Game.SCALE);
-	private int healthBarXStart = (int) (34 * Game.SCALE);
-	private int healthBarYStart = (int) (14 * Game.SCALE);
-	private int healthWidth = healthBarWidth;
+    private int healthBarWidth = (int) (150 * Game.SCALE);
+    private int healthBarHeight = (int) (4 * Game.SCALE);
+    private int healthBarXStart = (int) (34 * Game.SCALE);
+    private int healthBarYStart = (int) (14 * Game.SCALE);
+    private int healthWidth = healthBarWidth;
 
     //Variabili per definire la power bar
     private int powerBarWidth = (int) (104 * Game.SCALE);
-	private int powerBarHeight = (int) (2 * Game.SCALE);
-	private int powerBarXStart = (int) (44 * Game.SCALE);
-	private int powerBarYStart = (int) (34 * Game.SCALE);
-	private int powerWidth = powerBarWidth;
-	private int powerMaxValue = 200;
-	private int powerValue = powerMaxValue;
+    private int powerBarHeight = (int) (2 * Game.SCALE);
+    private int powerBarXStart = (int) (44 * Game.SCALE);
+    private int powerBarYStart = (int) (34 * Game.SCALE);
+    private int powerWidth = powerBarWidth;
+    private int powerMaxValue = 200;
+    private int powerValue = powerMaxValue;
 
-	private int flipX = 0;
-	private int flipW = 1;
+    private int flipX = 0;
+    private int flipW = 1;
 
     //Posizione verticale
     private int tyleY = 0;
@@ -84,12 +84,12 @@ public class Player extends Entity {
     private boolean powerAttackActive, ultimateActive;
     private int powerAttackTick, powerGrowSpeed = 15, powerGrowTick;
     // private int ultimateTick, ultimateGrowSpeed = 15, ultimateGrowTick;
-	private boolean attackChecked, canPlayAttackSound, hurted = false;
-    
+    private boolean attackChecked, canPlayAttackSound, hurted = false;
+
     private Rectangle2D.Float ultimateAttackBox;
     private int damage = 5;
     private Playing playing;
-    
+
 
     //Costruttore richiamante la classe estesa
     public Player(float x, float y, int width, int height, Playing playing){
@@ -102,14 +102,14 @@ public class Player extends Entity {
         initAttackBoxes();
     }
 
-    private void initStates(){
+    protected void initStates(){
         this.walkSpeed = 1.7f;
         this.state = IDLE;
         this.maxHealth = 100;
         this.currentHealth = maxHealth;
     }
 
-    private void initAttackBoxes(){
+    protected void initAttackBoxes(){
         attackBox = new Rectangle2D.Float(x, y, (int)(16 * Game.SCALE), (int)(25 * Game.SCALE));
         ultimateAttackBox = new Rectangle2D.Float(x, y, (int)(PLAYER_EXPLOSION_WIDTH * 0.85 ), (int)(PLAYER_EXPLOSION_HEIGHT * 0.85));
     }
@@ -123,16 +123,16 @@ public class Player extends Entity {
 
         //Se il player è appena stato ucciso avveengono alcune cose
         if (currentHealth <= 0) {
-            
+
             //Viene impostato il suo stato in quello di morte e vengono impostati i valori di animazione corretti
             if (state != DIE) {
                 state = DIE;
                 aniSpeed = 50;
                 aniTick = 0;
-                aniIndex = 0;                
+                aniIndex = 0;
                 playing.setPlayerDying(true);
-                
-                //A momento in cui l'animazione finisce, si mette in sleep il gioco peer dare un effetto pathos e si invia un seegnale 
+
+                //A momento in cui l'animazione finisce, si mette in sleep il gioco peer dare un effetto pathos e si invia un seegnale
                 //Alla classe playing peer impostar ilGameState a Deathscreen
             } else if((aniIndex == getSpriteAmount(DIE) - 1) && (aniTick >= aniSpeed - 1)){
 
@@ -142,18 +142,18 @@ public class Player extends Entity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                
+
                 //Si imposta il gioco neello stato di GameOver
                 playing.setGameOver(true);
                 //SFX
                 playing.getGame().getAudioPlayer().stopSong();
                 playing.getGame().getAudioPlayer().playEffect(AudioPlayer.GAME_OVER);
-        
-            //in tutti gli altri casi si manda avanti l'animazione e si ritorna
-            } else updateAnimationTick();    
-        
-                return;
-        
+
+                //in tutti gli altri casi si manda avanti l'animazione e si ritorna
+            } else updateAnimationTick();
+
+            return;
+
         }
 
         updateAttackBox();
@@ -176,16 +176,16 @@ public class Player extends Entity {
         }
 
         if (attacking || ultimateActive) checkAttack();
-        
+
         updateAnimationTick();
         setAnimation();
-        
+
     }
 
-        
+
     //Questa funzione fa avanzare il frame di animazione del personaggio ogni 40 tick del programma
     //Se l'indice diventa magiore del numero di frame viene ripristinato a 0 e si riparte da capo
-    private void updateAnimationTick() {
+    protected void updateAnimationTick() {
 
         aniTick++;
         if (aniTick >= aniSpeed) {
@@ -203,8 +203,8 @@ public class Player extends Entity {
         }
     }
 
-    //In questa funzione decidiamo la posizione della attackbox in base al movimento del giocatore e relativamente alla posizione dello stesso    
-    private void updateAttackBox() {
+    //In questa funzione decidiamo la posizione della attackbox in base al movimento del giocatore e relativamente alla posizione dello stesso
+    protected void updateAttackBox() {
 
         if (right || (powerAttackActive && flipW == 1)) {
             attackBox.x = hitbox.x + hitbox.width;
@@ -220,7 +220,7 @@ public class Player extends Entity {
         ultimateAttackBox.y = hitbox.y + hitbox.height - PLAYER_EXPLOSION_HEIGHT/2;
     }
 
-    //Dato che il programma viene refreshato 120 volte al secondo dato il game loop, aniIndex verrà modificato 
+    //Dato che il programma viene refreshato 120 volte al secondo dato il game loop, aniIndex verrà modificato
     //mano mano che avanzano i tick di gioco e verra' quindi mostrata una immagine differente ogni 40 tick
     public void render(Graphics g, int xLevelOffset, int yLevelOffset){
 
@@ -228,18 +228,18 @@ public class Player extends Entity {
         //La seconda è che l'immagine viene disegnata con uno spostamento
         //La terza è che  vengono aggiunte variabili di "flip", se il personagio cammina verso destra è tutto apposto
         //Se va verso sinistra, l'immagine viene mostrata riflessa al contrario rispetto al suo asse y, e per ovviare a questo problema
-        //Le viene sommato un offset agiuntivo per spostarla di nuovo nella posizione corretta 
-        
+        //Le viene sommato un offset agiuntivo per spostarla di nuovo nella posizione corretta
 
-        g.drawImage(animations[state][aniIndex], 
-                        (int)(hitbox.x - XOffset) - xLevelOffset + flipX, 
-                        (int)(hitbox.y - YOffset) - yLevelOffset, 
-                        hitBoxWidth * flipW, hitBoxHeight - (int)(3 * Game.SCALE), null);
-        
 
-    
+        g.drawImage(animations[state][aniIndex],
+                (int)(hitbox.x - XOffset) - xLevelOffset + flipX,
+                (int)(hitbox.y - YOffset) - yLevelOffset,
+                hitBoxWidth * flipW, hitBoxHeight - (int)(3 * Game.SCALE), null);
+
+
+
         if (state == USING_ULTIMATE){
-            g.drawImage(ultimate[aniIndex], 
+            g.drawImage(ultimate[aniIndex],
                     (int)( hitbox.x - hitbox.width * 1.1 - xLevelOffset - PLAYER_EXPLOSION_WIDTH/2),
                     (int)( hitbox.y - hitbox.height/ 1.1 - yLevelOffset - PLAYER_EXPLOSION_HEIGHT/2),
                     PLAYER_EXPLOSION_DRAW_WIDTH, PLAYER_EXPLOSION_DRAW_HEIGHT, null);
@@ -263,9 +263,9 @@ public class Player extends Entity {
     }
 
     //Disegna la UI di gioco, per ora soltanto la health bar e la power bar
-    private void drawUI(Graphics g) {
+    protected void drawUI(Graphics g) {
 
-        //Si disegna la gui per lo stato della vita e dei punti abilità 
+        //Si disegna la gui per lo stato della vita e dei punti abilità
         g.drawImage(statusBarImg, statusBarX, statusBarY, statusBarWidth, statusBarHeight, null);
         //Si disegna la barra della vita
         g.setColor(Color.RED);
@@ -275,11 +275,11 @@ public class Player extends Entity {
         g.fillRect(powerBarXStart + statusBarX, powerBarYStart + statusBarY, powerWidth, powerBarHeight);
     }
 
-    private void updateHealthBar() {
+    protected void updateHealthBar() {
         healthWidth = (int) ((currentHealth / (float)maxHealth) * healthBarWidth);
     }
 
-    private void updatePowerBar(){
+    protected void updatePowerBar(){
         powerWidth = (int)((powerValue / (float)powerMaxValue) * powerBarWidth);
 
         powerGrowTick++;
@@ -291,26 +291,26 @@ public class Player extends Entity {
 
     //Viene fatto un controllo ogni volta che il player attacca per vdere se sta colpendo un nemico
     //in tal caso deve applicare i danni a quel nemico
-    private void checkAttack() {
+    protected void checkAttack() {
 
         if (!attackChecked && aniIndex != 1) {
             return;
         }
 
-        //Viene fatto un controllo 
-        if (!ultimateActive) this.damage = 5; 
+        //Viene fatto un controllo
+        if (!ultimateActive) this.damage = 5;
 
         //Viene settato l'attacco a true se il controllo precedente fallisce ( vuol dire che si sta attaccando perchè la flag è !vera ),
         //il game loop lo resetterebbe a falso in tutti i casi con una velocità quasi istantanea, allora serve tenerlo a vero per
         //evitare che la chiamata di questa funzione ritorni nel'update successivo
         attackChecked = true;
-        
+
         //Viene fatto il controllo sul danno solo quando l'animazione si trova in un certo indice
         if (aniIndex == 1 && !ultimateActive){
             playing.checkPlayerHitEnemy(attackBox, 0);
             playing.checkObjectHit(attackBox, 0);
             attackChecked = false;
-            
+
         }
 
         if (aniIndex >= 7 && aniIndex <= 13 && ultimateActive) {
@@ -352,24 +352,24 @@ public class Player extends Entity {
             playing.getGame().getAudioPlayer().playSetOfEffect(AudioPlayer.PLAYER_DASHING);
         }
     }
-    
+
     //Funzione che controlla se il player sta toccando una pozione
-    private void checkPotionTouched() {
+    protected void checkPotionTouched() {
         playing.checkPotionTouched(hitbox);
     }
 
     //Funzione che controlla se il player sta toccando una Spina
-    private void checkSpikesTouched() {
+    protected void checkSpikesTouched() {
         playing.checkSpikesTouched(this);
     }
 
     //Qui viene settata l'animazione in base agli imput del giocatore, per ogni azione viene settata una velocità di animazione unica
-    private void setAnimation() {
-        
+    protected void setAnimation() {
+
         int startAnimation = state;
-        
+
         playing.getGame().getAudioPlayer().playWalkingSound(moving, inAir, currentHealth);
-        
+
         if (moving) {
             aniSpeed = 15;
             state = RUNNING;
@@ -397,7 +397,7 @@ public class Player extends Entity {
             aniSpeed = 23;
             return;
         }
-        
+
         if (powerAttackActive) {
             state = LIGHT_ATTACK;
             aniIndex = 1;
@@ -405,7 +405,7 @@ public class Player extends Entity {
             return;
         }
 
-        
+
         if (attacking) {
             state = LIGHT_ATTACK;
 
@@ -433,19 +433,19 @@ public class Player extends Entity {
     }
 
     //Vengono impostati i valori dell'animazione che deve essere eseguita a 0
-    private void resetAnimationTick() {
+    protected void resetAnimationTick() {
         aniIndex = 0;
         aniTick = 0;
     }
 
     //Ancora, all'interno di questa funzione viene gestito il movimento, impedendo quelli
     //concorrenti
-    private void updatePosition() {
-		moving = false;
+    protected void updatePosition() {
+        moving = false;
 
         //Salto
-		if (jump) jump();
-    
+        if (jump) jump();
+
         //Impedimento di movimenti e azioni concorrenti
         if ( ultimateActive || (!inAir && !powerAttackActive && ((!left && !right) || (right && left)))) {
             return;
@@ -453,18 +453,18 @@ public class Player extends Entity {
 
         //Cambi del movimento destra e sinistra, si aggiunge una quantità alla velocità
         //e vengono settate le variabili per girare l'immagine, per far voltare il player nella direzione della camminata
-		float xSpeed = 0;
+        float xSpeed = 0;
 
         //Questi due if servono a settare delle variabili oltre che al movimento anche al modo in cui vengono disegnati gli sprite
-        //Variabili che poi vengono utilizzata funzione draw come addendi o moltiplicatori per flipare le immagini e riposizionarle sull'asse giusto 
-		if (left && !right){
-			xSpeed -= walkSpeed;
+        //Variabili che poi vengono utilizzata funzione draw come addendi o moltiplicatori per flipare le immagini e riposizionarle sull'asse giusto
+        if (left && !right){
+            xSpeed -= walkSpeed;
             flipX = hitBoxWidth - (int)(22.5f * Game.SCALE);
             flipW = -1;
         }
-        
+
         if (right && !left){
-			xSpeed += walkSpeed;
+            xSpeed += walkSpeed;
             flipX = (int)(8 * Game.SCALE);
             flipW = 1;
         }
@@ -481,36 +481,36 @@ public class Player extends Entity {
             xSpeed *=3;
         }
 
-		if (!inAir){
-			if (!isEntityOnFloor(hitbox, levelData)){
-				inAir = true;
+        if (!inAir){
+            if (!isEntityOnFloor(hitbox, levelData)){
+                inAir = true;
             }
         }
 
 
-		if (inAir && !powerAttackActive) {
-			if (canMoveHere(hitbox.x, hitbox.y + airSpeed, hitbox.width, hitbox.height, levelData)) {
-				hitbox.y += airSpeed;
+        if (inAir && !powerAttackActive) {
+            if (canMoveHere(hitbox.x, hitbox.y + airSpeed, hitbox.width, hitbox.height, levelData)) {
+                hitbox.y += airSpeed;
                 airSpeed += GRAVITY+gravityset;
-				updateXPos(xSpeed);
-			
+                updateXPos(xSpeed);
+
             } else {
-                
+
                 playing.getGame().getAudioPlayer().playSetOfEffect(AudioPlayer.PLAYER_LANDING);
 
-				hitbox.y = getEntityYPosFloorRoofRelative(hitbox, airSpeed);
+                hitbox.y = getEntityYPosFloorRoofRelative(hitbox, airSpeed);
                 if (airSpeed > 0) resetInAir();
-				else airSpeed = fallSpeedAfterCollision;
-				
+                else airSpeed = fallSpeedAfterCollision;
+
                 updateXPos(xSpeed);
-			}
+            }
 
-		} else updateXPos(xSpeed);
-        
-		moving = true;
-	}
+        } else updateXPos(xSpeed);
 
-    private void updateXPos(float xSpeed){
+        moving = true;
+    }
+
+    protected void updateXPos(float xSpeed){
 
         if (canMoveHere(hitbox.x+xSpeed, hitbox.y, hitbox.width, hitbox.height, levelData)) {
             hitbox.x += xSpeed;
@@ -543,11 +543,11 @@ public class Player extends Entity {
             currentHealth = maxHealth;
         }
 
-    } 
+    }
 
     public void changePower(int value) {
         powerValue += value;
-        
+
         if (powerValue >= powerMaxValue) {
             powerValue = powerMaxValue;
         } else if (powerValue <= 0) {
@@ -574,7 +574,7 @@ public class Player extends Entity {
         }
 
     }
-    
+
     public void restoreState(PlayerMemento playerMemento){
 
         this.hitbox.x = playerMemento.getHitboxX();
@@ -586,24 +586,24 @@ public class Player extends Entity {
     }
 
     //Questa funzione invece fa il load dei frame di una animazione e li carica in un buffer di immagini
-    //La funzione precedente fa uso di 'img', ovvero l'intera immagine che viene importata nel programma come un 
+    //La funzione precedente fa uso di 'img', ovvero l'intera immagine che viene importata nel programma come un
     //file stream gtramite questa funzione
-    private void loadAnimations() {
+    protected void loadAnimations() {
 
         BufferedImage img = LoadSave.getSpriteAtlas(LoadSave.PLAYER_ATLAS);
 
-            animations = new BufferedImage[11][15];
+        animations = new BufferedImage[11][15];
 
-            for(int j=0; j< animations.length ; j++){
-                for(int i=0; i<animations[j].length; i++){                
-                    animations[j][i] = img.getSubimage(i*128, j*128, 128, 128);
-                }
+        for(int j=0; j< animations.length ; j++){
+            for(int i=0; i<animations[j].length; i++){
+                animations[j][i] = img.getSubimage(i*128, j*128, 128, 128);
             }
-        
+        }
+
         //Si carica inoltre l'ultimate e la barra della vita/punti abilità
         img = LoadSave.getSpriteAtlas(LoadSave.PLAYER_EXPLOSION);
         ultimate = new BufferedImage[15];
-            
+
         for (int i = 0; i < ultimate.length; i++) {
             ultimate[i] = img.getSubimage(i * PLAYER_EXPLOSION_DEFAULT_WIDTH, 0, PLAYER_EXPLOSION_DEFAULT_WIDTH, PLAYER_EXPLOSION_DEFAULT_HEIGHT);
         }
@@ -615,7 +615,7 @@ public class Player extends Entity {
     public void loadLevelData(int [][] levelData){
         this.levelData = levelData;
     }
-    
+
     //Funzione per settare il movimento a 0 quando viene chiamata
     public void resetMovement() {
         left = false;
@@ -633,17 +633,17 @@ public class Player extends Entity {
     }
 
     //Metodo per saltare
-    private void jump() {
+    protected void jump() {
 
         if (inAir) return;
         playing.getGame().getAudioPlayer().playSetOfEffect(AudioPlayer.PLAYER_JUMPING);
         inAir = true;
         airSpeed = jumpSpeed;
-        
+
     }
 
     //Metodo che resetta la flag di salto e velocità di caduta a 0 quando il player atterra
-    private void resetInAir() {
+    protected void resetInAir() {
         inAir = false;
         airSpeed = 0;
     }

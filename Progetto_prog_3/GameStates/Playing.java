@@ -11,7 +11,9 @@ import Progetto_prog_3.UI.GameOverOverlay;
 import Progetto_prog_3.UI.LevelCompletedOverlay;
 import Progetto_prog_3.UI.PauseOverlay;
 import Progetto_prog_3.entities.EnemyManager;
-import Progetto_prog_3.entities.Player;
+import Progetto_prog_3.entities.Players.Argo;
+import Progetto_prog_3.entities.Players.Player;
+import Progetto_prog_3.entities.Players.Players;
 import Progetto_prog_3.entities.MementoSavings.MementoManager;
 import Progetto_prog_3.levels.LevelManager;
 import Progetto_prog_3.objects.ObjectManager;
@@ -19,7 +21,7 @@ import Progetto_prog_3.utils.LoadSave;
 
 public class Playing extends State implements StateMethods{
     
-    private Player player;
+    private Players players;
     private LevelManager levelManager;
     private EnemyManager enemyManager;
     private GameOverOverlay gameOverOverlay;
@@ -74,10 +76,23 @@ public class Playing extends State implements StateMethods{
         levelManager = new LevelManager(game);
         enemyManager = new EnemyManager(this);
         objectManager = new ObjectManager(this);
+        //Viene scelto quale player utilizzare
+        switch (GameState.Player_Choose.player_choose)
+        {
+            case ARGO ->
+            {
+                players = new Argo(200, 400, (int) (64*Game.SCALE), (int)(64*Game.SCALE), this);
+                break;
+            }
+            case NOCTURNUS ->
+            {
+                players = new Player(200, 400, (int) (64*Game.SCALE), (int)(64*Game.SCALE), this);
+                break;
+            }
+        }
 
-        player = new Player(200, 400, (int) (64*Game.SCALE), (int)(64*Game.SCALE), this); 
-        player.loadLevelData(levelManager.getCurrentLevel().getLD());
-        player.setSpawnPoint(levelManager.getCurrentLevel().getPlayerSpawnPoint());
+        players.loadLevelData(levelManager.getCurrentLevel().getLD());
+        players.setSpawnPoint(levelManager.getCurrentLevel().getPlayerSpawnPoint());
 
         //Salvo lo stato iniziale del livello del player
 
@@ -108,8 +123,8 @@ public class Playing extends State implements StateMethods{
         objectManager.checkObjectHit(attackBox, areaAttack);
     }
 
-    public void checkSpikesTouched(Player p) {
-        objectManager.checkSpikesTouched(player);
+    public void checkSpikesTouched(Players p) {
+        objectManager.checkSpikesTouched(players);
     }
 
     //Override dei metodi dell'interfaccia implementata
@@ -127,15 +142,15 @@ public class Playing extends State implements StateMethods{
             gameOverOverlay.update();
 
         } else if (playerDying) {
-            player.update();
+            players.update();
 
         //Altrimenti viene fatto l'update del player e del livello, e di tutti gli oggetti all'interrno di esso
         } else if (!gameOver){
 
             levelManager.update();
-            enemyManager.update(levelManager.getCurrentLevel().getLD(), player);
-            objectManager.update(levelManager.getCurrentLevel().getLD(), player);
-            player.update();
+            enemyManager.update(levelManager.getCurrentLevel().getLD(), players);
+            objectManager.update(levelManager.getCurrentLevel().getLD(), players);
+            players.update();
             checkCloseToBorder();
     
         }
@@ -153,7 +168,7 @@ public class Playing extends State implements StateMethods{
         levelManager.draw(g, xLevelOffset, yLevelOffset);
         objectManager.draw(g, xLevelOffset, yLevelOffset);
         enemyManager.draw(g, xLevelOffset, yLevelOffset);
-        player.render(g, xLevelOffset, yLevelOffset);
+        players.render(g, xLevelOffset, yLevelOffset);
 
         //Vengono scritti gli FPS e gli UPS a schermo
         g.setColor(Color.white);
@@ -195,7 +210,7 @@ public class Playing extends State implements StateMethods{
 
     }
 
-    private void loadBackground(){
+    protected void loadBackground(){
 
         //Vengono caricate le immagini dlle nuvole
         backgroundImage = LoadSave.getSpriteAtlas(LoadSave.FOREST_LAYER_1);
@@ -215,7 +230,7 @@ public class Playing extends State implements StateMethods{
     private void checkCloseToBorder() {
 
         //Si estrae la posizione in x del player
-        int playerX = (int) player.getHitbox().x;
+        int playerX = (int) players.getHitbox().x;
         //Si calcola la differenza tra la posizione attuale e la variabile offset del livello
         int difference = playerX - xLevelOffset;
 
@@ -237,7 +252,7 @@ public class Playing extends State implements StateMethods{
         }
 
         //Lo stesso si fa per la y
-        int playerY = (int)player.getHitbox().y;
+        int playerY = (int) players.getHitbox().y;
         int differenceY = playerY - yLevelOffset;
 
         if (differenceY > bottomBorder) {
@@ -260,7 +275,7 @@ public class Playing extends State implements StateMethods{
     public void mouseClicked(MouseEvent e) {
         if (!gameOver) {
             if (e.getButton() == MouseEvent.BUTTON1) {
-                player.setAttck(true);
+                players.setAttck(true);
             }
         }
     }
@@ -323,28 +338,28 @@ public class Playing extends State implements StateMethods{
 
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_W:
-                    player.setUp(true);
+                    players.setUp(true);
                     break;
                 case KeyEvent.VK_A:
-                    player.setLeft(true);
+                    players.setLeft(true);
                     break;
                 case KeyEvent.VK_S:
-                    player.setDown(true);
+                    players.setDown(true);
                     break;
                 case KeyEvent.VK_D:
-                    player.setRight(true);
+                    players.setRight(true);
                     break;
                 case KeyEvent.VK_SPACE:
-                    player.setJump(true);
+                    players.setJump(true);
                     break;
                 case KeyEvent.VK_SHIFT:
-                    player.dash();
+                    players.dash();
                     break;
                 case KeyEvent.VK_ESCAPE:
                     paused = !paused;
                     break;
                 case KeyEvent.VK_E:
-                    player.ultimateAbility();
+                    players.ultimateAbility();
                     break;
             }
         }
@@ -357,19 +372,19 @@ public class Playing extends State implements StateMethods{
 
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_W:
-                    player.setUp(false);
+                    players.setUp(false);
                     break;
                 case KeyEvent.VK_A:
-                    player.setLeft(false);
+                    players.setLeft(false);
                     break;
                 case KeyEvent.VK_S:
-                    player.setDown(false);
+                    players.setDown(false);
                     break;
                 case KeyEvent.VK_D:
-                    player.setRight(false);
+                    players.setRight(false);
                     break;
                 case KeyEvent.VK_SPACE:
-                    player.setJump(false);
+                    players.setJump(false);
                     break;
                 default:
                     break;
@@ -385,7 +400,7 @@ public class Playing extends State implements StateMethods{
         
         //Si utilizza il Memento design pattern per resettare il livello al suo stato di partenza/Di crezione
         //All'interno di ogni reset dedicato ai singoli manager
-        player.resetAll();
+        players.resetAll();
         enemyManager.resetAllEnemyes();
         objectManager.resetAllObjects();
 
@@ -424,15 +439,15 @@ public class Playing extends State implements StateMethods{
     }
     
     public void windowFocusLost() { 
-        player.resetMovement(); 
+        players.resetMovement();
     }
     
     public void setGameOver(boolean gameOver) {
         this.gameOver = gameOver;
     }
     
-    public Player getPlayer(){
-        return player;
+    public Players getPlayer(){
+        return players;
     }
  
     public void setLevelComplited(boolean levelCompleted){

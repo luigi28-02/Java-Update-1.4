@@ -11,7 +11,7 @@ import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import Progetto_prog_3.entities.Player;
+import Progetto_prog_3.entities.Players.Players;
 
 import static Progetto_prog_3.utils.Constants.PlayerConstants.JUMPING_UP;
 
@@ -215,10 +215,10 @@ public class AudioPlayer {
 
     }
 
-    public void resetPlayerSoundBools(Player player){
+    public void resetPlayerSoundBools(Players players){
 
         if (!effects[PLAYER_ATTACK].isActive() && !effects[PLAYER_ATTACK + 1].isActive() && !effects[PLAYER_ATTACK + 2].isActive()) {
-            player.setCanPlayAtacksooound(true);
+            players.setCanPlayAtacksooound(true);
         }
 
     }

@@ -2,11 +2,7 @@ package Progetto_prog_3;
 import java.awt.Graphics;
 
 import Progetto_prog_3.Audio.AudioPlayer;
-import Progetto_prog_3.GameStates.GameOptions;
-import Progetto_prog_3.GameStates.GameState;
-import Progetto_prog_3.GameStates.Menu;
-import Progetto_prog_3.GameStates.Playing;
-import Progetto_prog_3.GameStates.StateMethods;
+import Progetto_prog_3.GameStates.*;
 import Progetto_prog_3.UI.AudioOptions;
 
 public class Game implements Runnable{
@@ -40,6 +36,7 @@ public class Game implements Runnable{
     //Game States
     private Playing playing;
     private Menu menu;
+    private SelectCharacter selectcharacter;
     private GameOptions gameOptions;
 
     public Game(){
@@ -60,6 +57,7 @@ public class Game implements Runnable{
         audioPlayer = new AudioPlayer();
         gameOptions = new GameOptions(this);
         menu = new Menu(this);
+        selectcharacter=new SelectCharacter(this);
         playing = new Playing(this);
         gamePanel = new GamePanel(this);
         gameWindow = new GameWindow(gamePanel);
@@ -98,6 +96,9 @@ public class Game implements Runnable{
             switch (GameState.state) {
                 case MENU:
                     stateToUpdate = this.menu;
+                    break;
+                case SELECT_CHARACTER:
+                    stateToUpdate=this.selectcharacter;
                     break;
     
                 case PLAYING:
@@ -185,6 +186,10 @@ public class Game implements Runnable{
     public Menu getMenu(){
         return menu;
     }
+    public SelectCharacter getSelectcharacter(){
+        return selectcharacter;
+    }
+
 
     public Playing getPlaying(){
         return playing;

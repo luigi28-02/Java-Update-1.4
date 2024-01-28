@@ -7,8 +7,8 @@ import java.util.ArrayList;
 
 import Progetto_prog_3.Game;
 import Progetto_prog_3.GameStates.Playing;
-import Progetto_prog_3.Status.StatusManager;
-import Progetto_prog_3.entities.Player;
+import Progetto_prog_3.entities.Players.Player;
+import Progetto_prog_3.entities.Players.Players;
 import Progetto_prog_3.levels.Level;
 import Progetto_prog_3.objects.Prototype.Cloningfactory;
 import Progetto_prog_3.utils.LoadSave;
@@ -50,7 +50,7 @@ public class ObjectManager {
     }
 
     //Semplice metdo per osservare se il player sta toccando le spike, in tal caso, morte istantanea, il gioco è molto punitivo :D
-    public void checkSpikesTouched(Player p){
+    public void checkSpikesTouched(Players p){
         for (Spike s : spikes) {
             if (s.getHitbox().intersects(p.getHitbox())) {
                 p.die();
@@ -91,7 +91,7 @@ public class ObjectManager {
             }
             case YELLOW_POTION ->
             {
-                playing.getPlayer().getStatusManager().applyjump(playing.getPlayer(),7,0.3f);
+                playing.getPlayer().getStatusManager().applyjump((Player) playing.getPlayer(),7,0.3f);
             }
         }
 
@@ -197,7 +197,7 @@ public class ObjectManager {
     }
 
     //La classica funzione update per eseguire l'incremento dell'animation tick dell'oggetto
-    public void update(int[][] levelData, Player player){
+    public void update(int[][] levelData, Players players){
         for (Potion potion : potions) {
             if (potion.isActive()) {
                 potion.update();
@@ -210,8 +210,8 @@ public class ObjectManager {
             }
         }
 
-        updateCanons(levelData, player);
-        updateProjectiles(levelData, player);
+        updateCanons(levelData, players);
+        updateProjectiles(levelData, players);
     }
 
     /*
@@ -221,13 +221,13 @@ public class ObjectManager {
      * se si trova di frontee
      * il canone deve sparare
      */
-    private void updateCanons(int[][] levelData, Player player) {
+    private void updateCanons(int[][] levelData, Players players) {
         for (Cannon c : cannons) {
             if (!c.doAnimation 
-                && ( c.getCannonTyleY() == player.getPlayerTileY()) //Qua viene agiunto un + 1 peerchè la y del player si trova su un blocco più in alto
-                && isPlayereInRange(c, player) 
-                && isPlayereInFrontOfCannon(c, player)
-                && canCannonSeePlayer(levelData, player.getHitbox(), c.getHitbox(), c.getCannonTyleY())) {
+                && ( c.getCannonTyleY() == players.getPlayerTileY()) //Qua viene agiunto un + 1 peerchè la y del player si trova su un blocco più in alto
+                && isPlayereInRange(c, players)
+                && isPlayereInFrontOfCannon(c, players)
+                && canCannonSeePlayer(levelData, players.getHitbox(), c.getHitbox(), c.getCannonTyleY())) {
                 
                     c.setAnimation(true);
             
@@ -255,15 +255,15 @@ public class ObjectManager {
     //Questo metodo esegue i controlli sulla palla di cannone, se questa è attiva si esegue l'update dlla sua posizione
     //Si controlla successivamente se sta colpeendo il player, in tal caso gli si applica il danno
     //Altrimeenti si controlla se stia colpendo un muro
-    private void updateProjectiles(int[][] levelData, Player player) {
+    private void updateProjectiles(int[][] levelData, Players players) {
         for (CannonBall cb : cannonBalls) {
             //Update della posizione
             if (cb.getActive()) {
                 cb.updatePosition();
             }
             //Controllo della collisione con il player
-            if (player.getHitbox().intersects(cb.getHitbox()) && cb.getCanDoDamage()) {
-                player.changeHealth(0);
+            if (players.getHitbox().intersects(cb.getHitbox()) && cb.getCanDoDamage()) {
+                players.changeHealth(0);
                 cb.setActive(false);
                 cb.setCanDoDamage(false);
                 //POSSIBILE IMPLEMENTAZIONE DEL POOL DESIGNPATTERN

@@ -2,7 +2,7 @@ package Progetto_prog_3.entities.RenderChain;
 
 import static Progetto_prog_3.utils.Constants.EnemtConstants.HellBound.*;
 import java.awt.Graphics;
-import Progetto_prog_3.entities.Player;
+import Progetto_prog_3.entities.Players.Players;
 import Progetto_prog_3.entities.enemies.AbstractEnemy;
 
 public class RenderHellBound implements RenderInterface{
@@ -15,7 +15,7 @@ public class RenderHellBound implements RenderInterface{
     }
 
     @Override
-    public void renderEntity(Graphics g, Player player, RenderingRequest[] requests, AbstractEnemy enemy, int xLevelOffset, int yLevelOffset) {
+    public void renderEntity(Graphics g, Players players, RenderingRequest[] requests, AbstractEnemy enemy, int xLevelOffset, int yLevelOffset) {
         if (enemy.getEnemyType() == HELL_BOUND) {
 
             g.drawImage(requests[enemy.getEnemyType()].getSprites()[enemy.getState()][enemy.getAniIndex()],
@@ -33,7 +33,7 @@ public class RenderHellBound implements RenderInterface{
             }
             
         } else {
-            nextHandler.renderEntity(g, player, requests, enemy, xLevelOffset, yLevelOffset);
+            nextHandler.renderEntity(g, players, requests, enemy, xLevelOffset, yLevelOffset);
         }
     }
     

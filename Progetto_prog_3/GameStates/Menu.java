@@ -16,9 +16,8 @@ public class Menu extends State implements StateMethods {
 
     //Variabili di ambiente, come i tasti del menù ed il background dello stesso 
     //(il contenitore che contiene i bottoni, non làeffettivo background)
+
     private MenuButton[] buttons = new MenuButton[3];
-    private BufferedImage backgroundImage, actualBackgroundImage;
-    private int menuX, menuY, menuWidth, menuHeight;
 
     //Costruttore, che carica i bottoni ed il background di questi
     public Menu(Game game) {
@@ -31,20 +30,13 @@ public class Menu extends State implements StateMethods {
     /*
      * Metodo che inizializza il backgroun
      */
-    private void loadBackground() {
-        backgroundImage = LoadSave.getSpriteAtlas(LoadSave.MENU_BACKGROUND);
-        menuWidth = (int)(backgroundImage.getWidth() * Game.SCALE);
-        menuHeight = (int)(backgroundImage.getHeight() * Game.SCALE);
-        menuX = Game.GAME_WIDTH / 2 - menuWidth / 2;
-        menuY = (int) (45 * Game.SCALE);
-    }
 
     /*
      * Metodo che inizializa i 3 bottoni del menù, ad ognuno è accegnato un indice dell'array, un diverso GAME_STATE
      * ed un suo indice di riga utilizzato nel suo metodo draw che lo disegna a schermo
      */
     private void loadButtons() {
-        buttons[0] = new MenuButton(Game.GAME_WIDTH / 2, (int) (150 * Game.SCALE), 0, GameState.PLAYING );
+        buttons[0] = new MenuButton(Game.GAME_WIDTH / 2, (int) (150 * Game.SCALE), 0, GameState.SELECT_CHARACTER );
         buttons[1] = new MenuButton(Game.GAME_WIDTH / 2, (int) (220 * Game.SCALE), 1, GameState.OPTION );
         buttons[2] = new MenuButton(Game.GAME_WIDTH / 2, (int) (290 * Game.SCALE), 2, GameState.QUIT );
     }

@@ -129,3 +129,9 @@ public abstract class Entity {
         this.inAir = inAir;
     }
 }
+
+
+//Metodi astratti da implementare
+
+
+

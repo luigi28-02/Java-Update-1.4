@@ -1,8 +1,7 @@
 package Progetto_prog_3.entities.enemies;
 
 import Progetto_prog_3.Game;
-import Progetto_prog_3.Audio.AudioPlayer;
-import Progetto_prog_3.entities.Player;
+import Progetto_prog_3.entities.Players.Players;
 import static Progetto_prog_3.utils.Constants.GRAVITY;
 import static Progetto_prog_3.utils.Constants.Directions.LEFT;
 import static Progetto_prog_3.utils.Constants.Directions.RIGHT;
@@ -33,10 +32,10 @@ public class HellBound extends AbstractEnemy{
     }
     
 	@Override
-    public void update(int[][] levelData, Player player) {
+    public void update(int[][] levelData, Players players) {
         
         if (active) {
-            act(levelData, player);
+            act(levelData, players);
             updateAttackBoxDirection();
 
             if (jumping && aniIndex == 4 && state != HELL_BOUND_DIE) {
@@ -56,7 +55,7 @@ public class HellBound extends AbstractEnemy{
 
     //Implementazione del metodo makeMovement utilizzato nel template pattern
     @Override
-    public void makeMovement(int[][] levelData, Player player) {
+    public void makeMovement(int[][] levelData, Players players) {
 
         switch (state) {
                     
@@ -65,8 +64,8 @@ public class HellBound extends AbstractEnemy{
                 this.walkSpeed = 0.4f;
                 aniSpeed = 17;
 
-                if (canSeePlayer(levelData, player)) {
-                    turnTowardsPlayer(player);
+                if (canSeePlayer(levelData, players)) {
+                    turnTowardsPlayer(players);
                     newState(HELL_BOUND_RUN);
                 }
                 
@@ -77,7 +76,7 @@ public class HellBound extends AbstractEnemy{
                 this.walkSpeed = 1.8f;
                 aniSpeed = 17;
                 
-                if (isPlayerCloseForAttack(player)) {
+                if (isPlayerCloseForAttack(players)) {
                     newState(HELL_BOUND_JUMP);
                 }
                 
@@ -93,7 +92,7 @@ public class HellBound extends AbstractEnemy{
                 //Nel primo momento in cui la attackbox del nemico collide con la hitbox del player
                 //A questo viene applicato il danno e viene sambiato lo stato della flag di attavvo a true
                 //Segnalango che l'attacco è stato eseguito, non ne verranno fatti altri ad ogni tick di agiornamento 
-                if(!attackChecked) checkEnemyHit(attackBox, player);    
+                if(!attackChecked) checkEnemyHit(attackBox, players);
                 break;
             
             case HELL_BOUND_SLIDE:
@@ -254,12 +253,12 @@ public class HellBound extends AbstractEnemy{
     }
 
     @Override
-    public int flipXP(Player player) {
+    public int flipXP(Players players) {
         return 0;
     }
 
     @Override
-    public int flipWP(Player player) {
+    public int flipWP(Players players) {
         return 0;
     }
 

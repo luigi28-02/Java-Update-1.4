@@ -3,7 +3,7 @@ package Progetto_prog_3.entities.RenderChain;
 import static Progetto_prog_3.utils.Constants.EnemtConstants.Ghost.*;
 import java.awt.Graphics;
 import Progetto_prog_3.Game;
-import Progetto_prog_3.entities.Player;
+import Progetto_prog_3.entities.Players.Players;
 import Progetto_prog_3.entities.enemies.AbstractEnemy;
 
 public class RenderGhost implements RenderInterface {
@@ -16,13 +16,13 @@ public class RenderGhost implements RenderInterface {
     }
 
     @Override
-    public void renderEntity(Graphics g, Player player, RenderingRequest[] requests, AbstractEnemy enemy, int xLevelOffset, int yLevelOffset) {
+    public void renderEntity(Graphics g, Players players, RenderingRequest[] requests, AbstractEnemy enemy, int xLevelOffset, int yLevelOffset) {
         if (enemy.getEnemyType() == GHOST) {
             
             g.drawImage(requests[enemy.getEnemyType()].getSprites()[enemy.getState()][enemy.getAniIndex()],
-                            (int)enemy.getHitbox().x - xLevelOffset - GHOST_DRAW_OFFSET_X + enemy.flipXP(player), 
+                            (int)enemy.getHitbox().x - xLevelOffset - GHOST_DRAW_OFFSET_X + enemy.flipXP(players),
                             ((int) enemy.getHitbox().y - yLevelOffset - GHOST_DRAW_OFFSET_Y), 
-                            GHOST_WIDTH * enemy.flipWP(player),
+                            GHOST_WIDTH * enemy.flipWP(players),
                             GHOST_HEIGHT, null);
 
             enemy.drawHitbox(g, xLevelOffset, yLevelOffset);

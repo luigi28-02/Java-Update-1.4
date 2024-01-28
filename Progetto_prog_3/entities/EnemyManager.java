@@ -8,13 +8,13 @@ import java.util.ArrayList;
 import Progetto_prog_3.Audio.AudioPlayer;
 import Progetto_prog_3.GameStates.Playing;
 import Progetto_prog_3.entities.MementoSavings.EnemyMemento;
+import Progetto_prog_3.entities.Players.Players;
 import Progetto_prog_3.entities.RenderChain.RenderGhost;
 import Progetto_prog_3.entities.RenderChain.RenderHellBound;
 import Progetto_prog_3.entities.RenderChain.RenderInterface;
 import Progetto_prog_3.entities.RenderChain.RenderNightBorne;
 import Progetto_prog_3.entities.RenderChain.RenderingRequest;
 import Progetto_prog_3.entities.enemies.AbstractEnemy;
-import Progetto_prog_3.entities.enemies.NightBorne;
 import Progetto_prog_3.levels.Level;
 import Progetto_prog_3.utils.LoadSave;
 import static Progetto_prog_3.utils.Constants.EnemtConstants.HellBound.*;
@@ -47,13 +47,13 @@ public class EnemyManager {
         enemyList = level.getEnemies();
     }
 
-    public void update(int[][] levelData, Player player){
+    public void update(int[][] levelData, Players players){
 
         boolean isAnyActive = false;
 
         for(AbstractEnemy ab : enemyList){
             if (ab.getActive()) {
-                ab.update(levelData, player);
+                ab.update(levelData, players);
                 isAnyActive = true;
             }
         }

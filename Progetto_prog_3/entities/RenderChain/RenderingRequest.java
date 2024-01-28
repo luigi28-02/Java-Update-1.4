@@ -30,7 +30,6 @@ public class RenderingRequest {
     public int getEnemyType() {
         return enemyType;
     }
-
     public BufferedImage[][] getSprites() {
         return sprites;
     }

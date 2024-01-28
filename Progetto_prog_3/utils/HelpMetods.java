@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import Progetto_prog_3.Game;
-import Progetto_prog_3.entities.Player;
+import Progetto_prog_3.entities.Players.Players;
 import Progetto_prog_3.objects.AbstractProjectile;
 import Progetto_prog_3.objects.Cannon;
 import Progetto_prog_3.objects.LootBox;
@@ -250,12 +250,12 @@ public class HelpMetods {
         }
     }
 
-    public static boolean isPlayereInFrontOfCannon(Cannon c, Player player) {
+    public static boolean isPlayereInFrontOfCannon(Cannon c, Players players) {
         if (c.getObjType() == CANNON_LEFT) {
-            if (c.getHitbox().x > player.getHitbox().x) {
+            if (c.getHitbox().x > players.getHitbox().x) {
                 return true;
             }
-        } else if (c.getHitbox().x < player.getHitbox().x) {
+        } else if (c.getHitbox().x < players.getHitbox().x) {
             return true;
         }
 
@@ -270,8 +270,8 @@ public class HelpMetods {
         
     }
 
-    public static boolean isPlayereInRange(Cannon c, Player player) {
-        int absValue = (int)Math.abs(player.getHitbox().x - c.getHitbox().x);
+    public static boolean isPlayereInRange(Cannon c, Players players) {
+        int absValue = (int)Math.abs(players.getHitbox().x - c.getHitbox().x);
         //Se la distanza in orizzontale è minore di una lungheza di attacco che vale un blocco
         //per 5, la condizione è vera e ritora vero, altrimenti falso
         return absValue <= Game.TILES_SIZE * 8;

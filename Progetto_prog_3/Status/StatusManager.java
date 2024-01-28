@@ -1,7 +1,7 @@
 package Progetto_prog_3.Status;
-import Progetto_prog_3.Game;
 import Progetto_prog_3.entities.Entity;
-import Progetto_prog_3.entities.Player;
+import Progetto_prog_3.entities.Players.Player;
+import Progetto_prog_3.entities.Players.Players;
 
 public class StatusManager {
 
@@ -30,7 +30,7 @@ public class StatusManager {
     }
 
     //Il player può saltare piu in alto
-    public void applyjump(Player player,int duration, float jumpValue)
+    public void applyjump(Player player, int duration, float jumpValue)
     {
         float startingGravityset = player.getGravityset();
         //Si conserva lo stato attuale della velocità di movimento della entità

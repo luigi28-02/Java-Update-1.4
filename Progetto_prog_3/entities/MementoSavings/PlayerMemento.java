@@ -1,6 +1,6 @@
 package Progetto_prog_3.entities.MementoSavings;
 
-import Progetto_prog_3.entities.Player;
+import Progetto_prog_3.entities.Players.Players;
 
 public class PlayerMemento extends Memento {
 
@@ -8,16 +8,16 @@ public class PlayerMemento extends Memento {
     private float hitBoxX, hitBoxY;
     private int currentHealth;
 
-    public PlayerMemento(Player player){
+    public PlayerMemento(Players players){
 
 
-        hitBoxX = (float)player.getHitbox().getX();
-        hitBoxY = (float)player.getHitbox().getY();
+        hitBoxX = (float) players.getHitbox().getX();
+        hitBoxY = (float) players.getHitbox().getY();
         
-        attackBoxX = (float)player.getHitbox().getX();
-        attackBoxY = (float)player.getHitbox().getY();
+        attackBoxX = (float) players.getHitbox().getX();
+        attackBoxY = (float) players.getHitbox().getY();
 
-        this.currentHealth = player.getCurrentHealth();
+        this.currentHealth = players.getCurrentHealth();
     }
 
     public int getCurrentHealth(){
